@@ -1,0 +1,1 @@
+PlannedEventsOverlap = Class.new(StandardError)

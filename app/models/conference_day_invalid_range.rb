@@ -1,0 +1,1 @@
+ConferenceDayInvalidRange = Class.new(StandardError)

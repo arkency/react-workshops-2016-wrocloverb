@@ -1,0 +1,1 @@
+ConferenceDaysOverlap = Class.new(StandardError)

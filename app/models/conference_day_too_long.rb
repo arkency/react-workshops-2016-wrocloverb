@@ -1,0 +1,1 @@
+ConferenceDayTooLong = Class.new(StandardError)

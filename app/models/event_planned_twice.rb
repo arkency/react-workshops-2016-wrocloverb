@@ -1,0 +1,1 @@
+EventPlannedTwice = Class.new(StandardError)

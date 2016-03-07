@@ -1,0 +1,1 @@
+PlannedEventNotWithinDay = Class.new(StandardError)
