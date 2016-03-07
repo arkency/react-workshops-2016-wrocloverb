@@ -16,41 +16,41 @@ module ConferenceDayPlanExpectedResponses
                                                       event_id,
                                                       planned_event_id)
     json({
-       data: [
-         {
-           id: planned_event_id,
-           type: "planned_events",
-           attributes: {
-             start: "2016-03-11T12:00:00Z"
-           },
-           relationships: {
-             event: { id: event_id, type: "events" }
-           },
-           links: {
-             event: event_url(event_id),
-             parent: conference_day_url(day_id)
-           },
-           included: [
-             {
-               id: event_id,
-               type: "events",
-               attributes: {
-                 name: "Working with Legacy Code",
-                 host: "Andrzej Krzywda",
-                 description: "Cool tricks to make your code manageable",
-                 time_in_minutes: 60
-               },
-               links: {
-                 self: event_url(event_id),
-                 parent: conference_url(conference_id)
-               }
-             }
-           ]
+      data: [
+        {
+          id: planned_event_id,
+          type: "planned_events",
+          attributes: {
+            start: "2016-03-11T12:00:00Z"
+          },
+          relationships: {
+            event: { id: event_id, type: "events" }
+          },
+          links: {
+            event: event_url(event_id),
+            parent: conference_day_url(day_id)
+          },
+          included: [
+            {
+              id: event_id,
+              type: "events",
+              attributes: {
+                name: "Working with Legacy Code",
+                host: "Andrzej Krzywda",
+                description: "Cool tricks to make your code manageable",
+                time_in_minutes: 60
+              },
+              links: {
+                self: event_url(event_id),
+                parent: conference_url(conference_id)
+              }
+            }
+          ]
          }
        ],
        links: {
-           self: conference_day_plan_index_url(day_id),
-           parent: conference_day_url(day_id)
+         self: conference_day_plan_index_url(day_id),
+         parent: conference_day_url(day_id)
        }
     })
   end

@@ -20,6 +20,15 @@ class ConferenceDaySerializer < BaseSerializer
     end
   end
 
+  def serialize(conference_day)
+    { data: {}, links: {} }.tap do |root|
+      serialize_conference_day_bare(conference_day).tap do |bare|
+        root[:data] = bare.except(:links)
+        root[:links] = bare[:links]
+      end
+    end
+  end
+
   private
   attr_reader :conference_id
 
@@ -32,17 +41,24 @@ class ConferenceDaySerializer < BaseSerializer
             from: conference_day.from.iso8601(0),
             to: conference_day.to.iso8601(0)
         },
-        relationships: { plan: { data: {} } },
+        relationships: { plan: { data: [] } },
         links: {
             self: conference_day_url(conference_day),
             plan: conference_day_plan_index_url(conference_day.id),
             parent: conference_url(conference_id)
         }
-    }
+    }.tap do |root|
+      root[:relationships][:plan][:data] = serialize_relationship(jsonapi_type_of_planned_event,
+                                                                  conference_day.planned_events)
+    end
   end
 
   def jsonapi_type_of_conference_day
     "conference_days"
+  end
+
+  def jsonapi_type_of_planned_event
+    "planned_events"
   end
 
   def jsonapi_type_of_conference_day_plan

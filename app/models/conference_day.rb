@@ -9,6 +9,7 @@ class ConferenceDay < ActiveRecord::Base
 
   def initialize(*args)
     super(*args)
+    validate!
     raise ConferenceDayTooLong.new if hour_span > 24
     raise ConferenceDayInvalidRange.new unless from_to_in_correct_order?
   end

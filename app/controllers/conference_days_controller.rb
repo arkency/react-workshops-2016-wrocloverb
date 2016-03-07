@@ -4,7 +4,35 @@ class ConferenceDaysController < ApplicationController
       format.html
 
       format.jsonapi do
-        render json: index_response_body
+        begin
+          render json: index_response_body
+        rescue ActiveRecord::RecordNotFound
+          render json: {
+            errors: {
+              message: "Conference not found"
+            }
+          }, status: :not_found
+        end
+      end
+
+      format.all { head :bad_request }
+    end
+  end
+
+  def show
+    respond_to do |format|
+      format.html
+
+      format.jsonapi do
+        begin
+          render json: show_response_body
+        rescue ActiveRecord::RecordNotFound
+          render json: {
+            errors: {
+              message: "Conference day not found"
+            }
+          }, status: :not_found
+        end
       end
 
       format.all { head :bad_request }
@@ -39,10 +67,10 @@ class ConferenceDaysController < ApplicationController
           }, status: :unprocessable_entity
         rescue ActiveRecord::RecordNotFound
           render json: {
-              errors: {
-                  message: "Conference not found"
-              }, status: :not_found
-          }
+            errors: {
+              message: "Conference not found"
+            }
+          }, status: :not_found
         rescue ActiveRecord::RecordInvalid => e
           render_error(e)
         end
@@ -58,7 +86,12 @@ class ConferenceDaysController < ApplicationController
   end
 
   def index_response_body
-    days = ConferenceDay.where(conference_id: params[:conference_id])
+    days = Conference.preload(conference_days: [:planned_events]).find(params[:conference_id]).days
     ConferenceDaySerializer.new(self, params[:conference_id]).serialize_collection(days)
+  end
+
+  def show_response_body
+    conference_day = ConferenceDay.preload(:planned_events).find(params[:id])
+    ConferenceDaySerializer.new(self, conference_day.conference_id).serialize(conference_day)
   end
 end
