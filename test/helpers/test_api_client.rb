@@ -20,6 +20,15 @@ class TestAPIClient
     end
   end
 
+  def jsonapi_delete(path)
+    test_env.delete path, format: :jsonapi
+    if test_env.response.status >= 300
+      yield MultiJson.load(test_env.response.body)
+    else
+      yield test_env.response.status
+    end
+  end
+
   def next_uuid
     SecureRandom.uuid
   end
@@ -39,7 +48,7 @@ class TestAPIClient
       response["links"].each do |name, url|
         set!("root/#{name}".to_sym, url)
       end
-    end   
+    end
   end
 
   def learn_simple_links!(response_data)

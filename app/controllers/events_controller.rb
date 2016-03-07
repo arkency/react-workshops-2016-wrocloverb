@@ -4,7 +4,7 @@ class EventsController < ApplicationController
       format.html
       format.jsonapi do
         begin
-          Conference.find(params[:conference_id]) do |conference|
+          Conference.find(params[:conference_id]).tap do |conference|
             conference.accept_event(create_event_params)
             conference.save!
             head :created
@@ -13,8 +13,8 @@ class EventsController < ApplicationController
           render json: {
             errors: {
               message: "Conference not found"
-            }, status: :not_found
-          }
+            }
+          }, status: :not_found
         rescue ActiveRecord::RecordInvalid => e
           render_error(e)
         end
@@ -28,7 +28,15 @@ class EventsController < ApplicationController
     respond_to do |format|
       format.html
       format.jsonapi do
-        render json: serialized_conference_events
+        begin
+          render json: serialized_conference_events
+        rescue ActiveRecord::RecordNotFound
+          render json: {
+            errors: {
+              message: "Conference not found"
+            }
+          }, status: :not_found
+        end
       end
 
       format.all { head :bad_request }
@@ -40,10 +48,29 @@ class EventsController < ApplicationController
       format.html
       format.jsonapi do
         begin
-          Event.find(params[:id]) do |event|
+          Event.find(params[:id]).tap do |event|
             render json: EventSerializer.new(self, event.conference_id).serialize(event)
           end
-        rescue
+        rescue ActiveRecord::RecordNotFound
+          render json: {
+            errors: {
+              message: "Event not found"
+            }
+          }, status: :not_found
+        end
+      end
+
+      format.all { head :bad_request }
+    end
+  end
+
+  def destroy
+    respond_to do |format|
+      format.jsonapi do
+        begin
+          Event.find(params[:id]).destroy!
+          head :ok
+        rescue ActiveRecord::RecordNotFound
           render json: {
             errors: {
               message: "Event not found"

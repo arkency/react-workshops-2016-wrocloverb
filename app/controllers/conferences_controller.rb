@@ -24,6 +24,25 @@ class ConferencesController < ApplicationController
     end
   end
 
+  def destroy
+    respond_to do |format|
+      format.jsonapi do
+        begin
+          Conference.find(params[:id]).destroy!
+          head :ok
+        rescue ActiveRecord::RecordNotFound
+          render json: {
+            errors: {
+              message: "Conference not found"
+            }
+          }, status: :not_found
+        end
+      end
+
+      format.all { head :bad_request }
+    end
+  end
+
   def show
     respond_to do |format|
       format.html
@@ -40,9 +59,6 @@ class ConferencesController < ApplicationController
       end
       format.all { head :bad_request }
     end
-  end
-
-  def destroy
   end
 
   private

@@ -251,6 +251,34 @@ class ConferenceDaysFlowTest < ApplicationAPITestSet
       }}, expected_label_missing_error)
   end
 
+  def test_destroying_conference_days
+    api_client.next_uuid.tap do |conference_day_id|
+      api_client.create(conference_days_endpoint,
+                        conference_day: {
+                            id: conference_day_id,
+                            label: "Day 1",
+                            from: "2016-03-11T11:00:00+01:00",
+                            to: "2016-03-11T23:00:00+01:00"
+                        })
+
+      api_client.discover_index_links!(conference_days_endpoint)
+
+      api_client.jsonapi_delete(api_client[conference_day_endpoint(conference_day_id)]) do
+        assert_response :ok
+      end
+
+      api_client.assert_get_response(conference_day_endpoint(conference_day_id),
+        expected_conference_day_not_found_error, :not_found)
+    end
+  end
+
+  def test_invalid_conference_day_on_delete
+    api_client.jsonapi_delete(conference_day_url(api_client.next_uuid)) do |response|
+      assert_equal expected_conference_day_not_found_error, response
+      assert_response :not_found
+    end
+  end
+
   private
   def api_client
     @api_client ||= TestAPIClient.new(self).tap do |client|

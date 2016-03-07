@@ -208,9 +208,34 @@ class ConferencesFlowTest < ApplicationAPITestSet
       }}, expected_name_validation_error)
   end
 
-  def test_not_found_error
+  def test_not_found_show_error
     api_client.jsonapi_get(conference_url(api_client.next_uuid)) do |response|
       assert_equal expected_conference_not_found_error, response
+      assert_response :not_found
+    end
+  end
+
+  def test_not_found_delete_error
+    api_client.jsonapi_delete(conference_url(api_client.next_uuid)) do |response|
+      assert_equal expected_conference_not_found_error, response
+      assert_response :not_found
+    end
+  end
+
+  def test_deleting_conferences
+    api_client.next_uuid.tap do |conference_id|
+      api_client.create(conferences_endpoint,
+        conference: {
+          id: conference_id,
+          name: "wroc_love.rb 2016"
+        })
+
+      api_client.discover_index_links!(conferences_endpoint)
+
+      api_client.jsonapi_delete(api_client[conference_endpoint(conference_id)]) { |_| assert_response :ok }
+
+      api_client.assert_get_response(conference_endpoint(conference_id),
+        expected_conference_not_found_error, :not_found)
     end
   end
 
@@ -219,6 +244,10 @@ class ConferencesFlowTest < ApplicationAPITestSet
     @api_client ||= TestAPIClient.new(self).tap do |client|
       client.learn_root_urls!
     end
+  end
+
+  def conference_endpoint(id)
+    :"conferences:#{id}/self"
   end
 
   def conferences_endpoint

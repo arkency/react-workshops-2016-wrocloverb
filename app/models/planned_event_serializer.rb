@@ -4,6 +4,7 @@ class PlannedEventSerializer < BaseSerializer
                   :conference_url,
                   :conference_day_url,
                   :conference_day_plan_index_url,
+                  :conference_day_plan_url,
                   :event_url
 
   def initialize(url_adapter, event_serializer, conference_id, conference_day_id)
@@ -23,6 +24,16 @@ class PlannedEventSerializer < BaseSerializer
     end
   end
 
+  def serialize(planned_event)
+    { data: {}, included: [], links: {} }.tap do |root|
+      serialize_bare(planned_event).tap do |bare|
+        root[:data] = bare.except(:links, :included)
+        root[:included] = bare[:included]
+        root[:links] = bare[:links]
+      end
+    end
+  end
+
   private
   attr_reader :conference_day_id, :conference_id, :event_serializer
 
@@ -35,16 +46,15 @@ class PlannedEventSerializer < BaseSerializer
       },
       relationships: {},
       links: {
-        parent: conference_day_url(conference_day_id)
+        parent: conference_day_url(conference_day_id),
+        self: conference_day_plan_url(planned_event.id)
       },
       included: []
     }.tap do |root|
-      unless planned_event.event.nil?
-        event = planned_event.event
-        root[:relationships][:event] = { id: event.id, type: jsonapi_events_type }
-        root[:included] = [event_serializer.serialize_collection([event])[:data][0]]
-        root[:links][:event] = event_url(event.id)
-      end
+      event = planned_event.event
+      root[:relationships][:event] = { id: event.id, type: jsonapi_events_type }
+      root[:included] = [event_serializer.serialize_collection([event])[:data][0]]
+      root[:links][:event] = event_url(event.id)
     end
   end
 

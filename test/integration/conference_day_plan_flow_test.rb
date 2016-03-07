@@ -11,6 +11,45 @@ module ConferenceDayPlanExpectedResponses
     })
   end
 
+  def expected_planned_event_show_response(conference_id,
+                                           day_id,
+                                           event_id,
+                                           planned_event_id)
+    json({
+      data: {
+        id: planned_event_id,
+        type: "planned_events",
+        attributes: {
+            start: "2016-03-11T12:00:00Z"
+        },
+        relationships: {
+            event: { id: event_id, type: "events" }
+        },
+      },
+      links: {
+        self: conference_day_plan_url(planned_event_id),
+        event: event_url(event_id),
+        parent: conference_day_url(day_id)
+      },
+      included: [
+        {
+          id: event_id,
+          type: "events",
+          attributes: {
+            name: "Working with Legacy Code",
+            host: "Andrzej Krzywda",
+            description: "Cool tricks to make your code manageable",
+            time_in_minutes: 60
+          },
+          links: {
+            self: event_url(event_id),
+            parent: conference_url(conference_id)
+          }
+        }
+      ]
+    })
+  end
+
   def expected_plan_with_first_planned_event_response(conference_id,
                                                       day_id,
                                                       event_id,
@@ -27,6 +66,7 @@ module ConferenceDayPlanExpectedResponses
             event: { id: event_id, type: "events" }
           },
           links: {
+            self: conference_day_plan_url(planned_event_id),
             event: event_url(event_id),
             parent: conference_day_url(day_id)
           },
@@ -91,6 +131,14 @@ module ConferenceDayPlanExpectedResponses
     json({
       errors: {
         message: "Conference day not found"
+      }
+    })
+  end
+
+  def expected_planned_event_not_found_error
+    json({
+      errors: {
+        message: "Planned event not found"
       }
     })
   end
@@ -216,6 +264,56 @@ class ConferenceDayPlanFlowTest < ApplicationAPITestSet
       }}, expected_id_missing_error)
   end
 
+  def test_showing_planned_event
+    api_client.next_uuid.tap do |planned_event_id|
+      api_client.create(plan_endpoint,
+                        planned_event: {
+                            id: planned_event_id,
+                            start: "2016-03-11T13:00:00+01:00",
+                            event_id: event_id
+                        })
+
+      api_client.discover_index_links!(plan_endpoint)
+
+      api_client.assert_get_response(planned_event_endpoint(planned_event_id),
+        expected_planned_event_show_response(conference_id,
+                                             conference_day_id,
+                                             event_id,
+                                             planned_event_id))
+    end
+  end
+
+  def test_destroying_planned_event
+    api_client.next_uuid.tap do |planned_event_id|
+      api_client.create(plan_endpoint,
+        planned_event: {
+          id: planned_event_id,
+          start: "2016-03-11T12:00:00+01:00",
+          event_id: event_id
+        })
+
+      api_client.discover_index_links!(plan_endpoint)
+
+      api_client.jsonapi_delete(api_client[planned_event_endpoint(planned_event_id)]) do
+        assert_response :ok
+      end
+    end
+  end
+
+  def test_showing_invalid_event
+    api_client.jsonapi_get(conference_day_plan_url(api_client.next_uuid)) do |response|
+      assert_equal expected_planned_event_not_found_error, response
+      assert_response :not_found
+    end
+  end
+
+  def test_destroying_invalid_planned_event
+    api_client.jsonapi_delete(conference_day_plan_url(api_client.next_uuid)) do |response|
+      assert_equal expected_planned_event_not_found_error, response
+      assert_response :not_found
+    end
+  end
+
   private
   def api_client
     @api_client ||= TestAPIClient.new(self).tap do |client|
@@ -271,6 +369,10 @@ class ConferenceDayPlanFlowTest < ApplicationAPITestSet
 
   def plan_endpoint
     :"conference_days:#{conference_day_id}/plan"
+  end
+
+  def planned_event_endpoint(id)
+    :"planned_events:#{id}/self"
   end
 
   def events_endpoint

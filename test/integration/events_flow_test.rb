@@ -44,6 +44,30 @@ module EventsFlowExpectedResponses
       }
     })
   end
+
+  def expected_event_not_found_error
+    json({
+      errors: {
+        message: "Event not found"
+      }
+    })
+  end
+
+  def expected_event_name_invalid_error
+    json({
+      errors: {
+        message: "Validation failed: Events name can't be blank"
+      }
+    })
+  end
+
+  def expected_conference_not_found_error
+    json({
+      errors: {
+        message: "Conference not found"
+      }
+    })
+  end
 end
 
 class EventsFlowTest < ApplicationAPITestSet
@@ -80,6 +104,72 @@ class EventsFlowTest < ApplicationAPITestSet
 
     api_client.assert_get_response(:"events:#{event_id}/self",
       expected_event_show_response(event_id, conference_id))
+  end
+
+  def test_showing_invalid_event
+    api_client.jsonapi_get(event_url(api_client.next_uuid)) do |response|
+      assert_equal expected_event_not_found_error, response
+      assert_response :not_found
+    end
+  end
+
+  def test_index_invalid_conference
+    api_client.jsonapi_get(conference_events_url(api_client.next_uuid)) do |response|
+      assert_equal expected_conference_not_found_error, response
+      assert_response :not_found
+    end
+  end
+
+  def test_create_invalid_conference
+    api_client.jsonapi_post(conference_events_url(api_client.next_uuid),
+      event: {
+        id: api_client.next_uuid,
+        name: "Working with Legacy Code",
+        host: "Andrzej Krzywda",
+        time_in_minutes: 60
+      }) do |response|
+      assert_equal expected_conference_not_found_error, response
+      assert_response :not_found
+    end
+  end
+
+  def test_create_without_name
+    api_client.assert_post_error_response(events_endpoint,
+      { event: {
+          id: api_client.next_uuid,
+          name: "",
+          host: "Andrzej Krzywda",
+          time_in_minutes: 60
+      }}, expected_event_name_invalid_error)
+  end
+
+  def test_destroying_event
+    api_client.next_uuid.tap do |event_id|
+      api_client.create(events_endpoint,
+                        event: {
+                            id: event_id,
+                            name: "Working with Legacy Code",
+                            host: "Andrzej Krzywda",
+                            description: "Cool tricks to make your codebase manageable.",
+                            time_in_minutes: 60
+                        })
+
+      api_client.discover_index_links!(events_endpoint)
+
+      api_client.jsonapi_delete(api_client[:"events:#{event_id}/self"]) do
+        assert_response :ok
+      end
+
+      api_client.assert_get_response(:"events:#{event_id}/self",
+                                     expected_event_not_found_error, :not_found)
+    end
+  end
+
+  def test_destroying_invalid_event
+    api_client.jsonapi_delete(event_url(api_client.next_uuid)) do |response|
+      assert_equal expected_event_not_found_error, response
+      assert_response :not_found
+    end
   end
 
   private

@@ -62,6 +62,47 @@ class ConferenceDayPlanController < ApplicationController
     end
   end
 
+  def show
+    respond_to do |format|
+      format.html
+
+      format.jsonapi do
+        begin
+          PlannedEvent.preload(:conference_day, :event).find(params[:id]).tap do |planned_event|
+            render json: planned_event_show_response(planned_event)
+          end
+        rescue ActiveRecord::RecordNotFound
+          render json: {
+            errors: {
+              message: "Planned event not found"
+            }
+          }, status: :not_found
+        end
+      end
+
+      format.all { head :bad_request }
+    end
+  end
+
+  def destroy
+    respond_to do |format|
+      format.jsonapi do
+        begin
+          PlannedEvent.find(params[:id]).destroy!
+          head :ok
+        rescue ActiveRecord::RecordNotFound
+          render json: {
+              errors: {
+                  message: "Planned event not found"
+              }
+          }, status: :not_found
+        end
+      end
+
+      format.all { head :bad_request }
+    end
+  end
+
   private
   def create_planned_event_params
     params.require(:planned_event).permit(:id, :start, :event_id)
@@ -73,5 +114,14 @@ class ConferenceDayPlanController < ApplicationController
                                event_serializer,
                                day.conference_id,
                                day.id).serialize_collection(day.planned_events)
+  end
+
+  def planned_event_show_response(planned_event)
+    day = planned_event.conference_day
+    event_serializer = EventSerializer.new(self, day.conference_id)
+    PlannedEventSerializer.new(self,
+                               event_serializer,
+                               day.conference_id,
+                               day.id).serialize(planned_event)
   end
 end

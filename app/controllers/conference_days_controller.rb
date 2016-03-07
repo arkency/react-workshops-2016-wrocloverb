@@ -80,6 +80,25 @@ class ConferenceDaysController < ApplicationController
     end
   end
 
+  def destroy
+    respond_to do |format|
+      format.jsonapi do
+        begin
+          ConferenceDay.find(params[:id]).destroy!
+          head :ok
+        rescue ActiveRecord::RecordNotFound
+          render json: {
+              errors: {
+                  message: "Conference day not found"
+              }
+          }, status: :not_found
+        end
+      end
+
+      format.all { head :bad_request }
+    end
+  end
+
   private
   def conference_day_params
     params.require(:conference_day).permit(:id, :label, :from, :to)
