@@ -78,6 +78,30 @@ module ConferenceDayPlanExpectedResponses
       }
     })
   end
+
+  def expected_event_or_conference_day_not_found_error
+    json({
+      errors: {
+        message: "Event or conference day not found"
+      }
+    })
+  end
+
+  def expected_conference_day_not_found_error
+    json({
+      errors: {
+        message: "Conference day not found"
+      }
+    })
+  end
+
+  def expected_id_missing_error
+    json({
+      errors: {
+        message: "Validation failed: Planned events can't be blank"
+      }
+    })
+  end
 end
 
 class ConferenceDayPlanFlowTest < ApplicationAPITestSet
@@ -154,6 +178,42 @@ class ConferenceDayPlanFlowTest < ApplicationAPITestSet
         start: "2016-03-11T14:00:00+01:00",
         event_id: event_id
       }}, expected_event_planned_twice_error)
+  end
+
+  def test_wrong_conference_day_on_index
+    api_client.jsonapi_get(conference_day_plan_index_url(api_client.next_uuid)) do |response|
+      assert_equal expected_conference_day_not_found_error, response
+      assert_response :not_found
+    end
+  end
+
+  def test_wrong_conference_day_or_event_on_create
+    api_client.jsonapi_post(conference_day_plan_index_url(api_client.next_uuid),
+                        planned_event: {
+                            id: api_client.next_uuid,
+                            event_id: event_id,
+                            start: "2016-03-11T12:00:00+01:00"
+                        }) do |response|
+      assert_equal expected_event_or_conference_day_not_found_error, response
+      assert_response :not_found
+    end
+
+    api_client.assert_post_error_response(plan_endpoint, {
+        planned_event: {
+            id: api_client.next_uuid,
+            event_id: api_client.next_uuid,
+            start: "2016-03-11T12:00:00+01:00"
+        }
+    }, expected_event_or_conference_day_not_found_error, :not_found)
+  end
+
+  def test_validation_error_on_start
+    api_client.assert_post_error_response(plan_endpoint,
+      { planned_event: {
+        id: "",
+        start: "2016-03-11T12:00:00+01:00",
+        event_id: event_id
+      }}, expected_id_missing_error)
   end
 
   private

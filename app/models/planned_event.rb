@@ -17,6 +17,6 @@ class PlannedEvent < ActiveRecord::Base
 
   private
   def finish
-    start.advance(minutes: time_in_minutes)
+    start.advance(minutes: time_in_minutes) unless start.nil?
   end
 end

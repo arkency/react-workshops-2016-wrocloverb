@@ -4,8 +4,16 @@ class ConferenceDayPlanController < ApplicationController
       format.html
 
       format.jsonapi do
-        render json: planned_events_index_response(
-            ConferenceDay.preload(planned_events: [:event]).find(params[:conference_day_id]))
+        begin
+          render json: planned_events_index_response(
+              ConferenceDay.preload(planned_events: [:event]).find(params[:conference_day_id]))
+        rescue ActiveRecord::RecordNotFound
+          render json: {
+            errors: {
+              message: "Conference day not found"
+            }
+          }, status: :not_found
+        end
       end
 
       format.all { head :bad_request }
@@ -43,8 +51,8 @@ class ConferenceDayPlanController < ApplicationController
           render json: {
             errors: {
               message: "Event or conference day not found"
-            }, status: :not_found
-          }
+            }
+          }, status: :not_found
         rescue ActiveRecord::RecordInvalid => e
           render_error(e)
         end
