@@ -28,7 +28,15 @@ class ConferencesController < ApplicationController
     respond_to do |format|
       format.html
       format.jsonapi do
-        render json: show_response_body
+        begin
+          render json: show_response_body
+        rescue ActiveRecord::RecordNotFound
+          render json: {
+            errors: {
+              message: "Conference not found"
+            }
+          }, status: :not_found
+        end
       end
       format.all { head :bad_request }
     end

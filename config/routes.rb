@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root to: "application#index"
+  root to: "root#index"
   resources :conferences, only: [:index, :show, :create] do
     resources :events, only: [:create, :index, :show]
     resources :conference_days, only: [:index, :create], as: :days

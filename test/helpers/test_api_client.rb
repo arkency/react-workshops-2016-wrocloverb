@@ -100,6 +100,6 @@ class TestAPIClient
   attr_reader :test_env
 
   def get(key)
-    @kv_store[key]
+    @kv_store.fetch(key)
   end
 end

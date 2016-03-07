@@ -69,6 +69,22 @@ module ExpectedConferenceFlowResponses
       message: "Validation failed: Name has already been taken"
     }})
   end
+
+  def expected_name_validation_error
+    json({
+      errors: {
+        message: "Validation failed: Name can't be blank"
+      }
+    })
+  end
+
+  def expected_conference_not_found_error
+    json({
+      errors: {
+        message: "Conference not found"
+      }
+    })
+  end
 end
 
 class ConferencesFlowTest < ApplicationAPITestSet
@@ -181,6 +197,20 @@ class ConferencesFlowTest < ApplicationAPITestSet
             expected_show_conference_with_events_response(conference_id, event_id))
         end
       end
+    end
+  end
+
+  def test_validation_errors
+    api_client.assert_post_error_response(conferences_endpoint,
+      { conference: {
+         id: api_client.next_uuid,
+         name: ""
+      }}, expected_name_validation_error)
+  end
+
+  def test_not_found_error
+    api_client.jsonapi_get(conference_url(api_client.next_uuid)) do |response|
+      assert_equal expected_conference_not_found_error, response
     end
   end
 
