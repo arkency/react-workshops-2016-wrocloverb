@@ -52,6 +52,13 @@ bundle exec rake db:test:prepare
 bundle exec rake test
 ```
 
+## How to run?
+
+```
+cd react-workshops-2016-wrocloverb
+bundle exec rails s
+```
+
 ## Docs:
 
 * [React.js](http://facebook.github.io/react/)
