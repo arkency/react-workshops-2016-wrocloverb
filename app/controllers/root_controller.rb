@@ -1,7 +1,7 @@
 class RootController < ApplicationController
   def index
     respond_to do |format|
-      format.html { render text: "Hello!" }
+      format.html
       format.jsonapi { render json: root_jsonapi_response }
       format.all { head :bad_request }
     end
