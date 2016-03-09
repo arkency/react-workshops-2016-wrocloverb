@@ -67,13 +67,3 @@ function GreeterApp () {
     }
   };
 }
-
-$(() => {
-	let container = document.createElement("div");
-	container.id = "greeter";
-	document.body.appendChild(container);
-
-	const greeter = GreeterApp();
-	ReactDOM.render(greeter.ui(), document.getElementById("greeter"));
-}); 
-
