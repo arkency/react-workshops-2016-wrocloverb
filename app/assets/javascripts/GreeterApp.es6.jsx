@@ -67,3 +67,16 @@ function GreeterApp () {
     }
   };
 }
+
+/* How to start your application:
+// this idiom is used to ensure the whole HTML is loaded already.
+$(() => {
+  const app = GreeterApp();
+  // Provide a container where your application will get rendered.
+  // Here we assume that there is a div with id "greeter":
+  $("#greeter").each(function() {
+    // this refers to each object matching the selector.
+    ReactDOM.render(app.ui(), this);
+  });
+});
+*/
