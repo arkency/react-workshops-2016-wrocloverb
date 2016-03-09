@@ -13,6 +13,11 @@
 //= require jquery
 //= require jquery_ujs
 //= require twitter/bootstrap
-//= require_tree .
 //= require react
 //= require react_ujs
+//= require redux-3.3.1
+//= require react-redux-4.4.0
+//= require react-bootstrap-0.28.3.js
+//= require classNames-2.2.3
+//= require uuid-js-0.7.5
+//= require_tree .
