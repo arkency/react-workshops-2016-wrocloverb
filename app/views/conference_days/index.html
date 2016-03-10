@@ -4,13 +4,34 @@
       <div class="pull-right">
         <div class="btn-group">
           <a href="/conferences/active-conference" class="btn btn-default">Back</a>
-          <button class="btn btn-primary">Schedule new&hellip;</button>
+          <a class="btn btn-primary" 
+             data-toggle="collapse" 
+             href="#add-conference-day-form">Schedule new&hellip;</a>
         </div>
       </div>
       wroc_love.rb 2016
       <br />
       <small>Days</small>      
     </h1>
+    <div id="add-conference-day-form" class="collapse">
+      <div class="well">
+        <form>
+          <div class="form-group">
+            <label for="label">Label:</label>
+            <input type="text" class="form-control" id="label" placeholder="ex. Day 1" />
+          </div>        
+          <div class="form-group">
+            <label for="start">From:</label>
+            <input type="date" class="form-control" id="start" placeholder="ex. 2015-03-11 10:00" />
+          </div>
+          <div class="form-group">
+            <label for="finish">To:</label>
+            <input type="date" class="form-control" id="finish" placeholder="ex. 2015-03-11 22:00" />          
+          </div>
+          <button type="submit" class="btn btn-primary">Schedule</button>
+        </form>
+      </div>
+    </div>
     <div class="panel panel-default">
       <div class="panel-heading">
         <div class="pull-right">

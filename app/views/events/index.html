@@ -4,13 +4,37 @@
         <div class="pull-right">
           <div class="btn-group">
             <a href="/conferences/active-conference" class="btn btn-default">Back</a>
-            <button class="btn btn-primary">Accept new&hellip;</button>
+            <a data-toggle="collapse" href="#add-conference-event-form" 
+               class="btn btn-primary">Accept new&hellip;</a>
           </div>
         </div>
         wroc_love.rb 2016
         <br />
         <small>Events</small>
     </h1>
+    <div id="add-conference-event-form" class="collapse">
+      <div class="well">
+        <form>
+          <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" placeholder="ex. Working with Legacy Code" />
+          </div>
+          <div class="form-group">
+            <label for="host">Host:</label>
+            <input type="text" class="form-control" id="host" placeholder="ex. Andrzej Krzywda" />
+          </div>
+          <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" class="form-control"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="time-in-minutes">Time (in minutes):</label>
+            <input type="number" min="1" max="1440" class="form-control" id="time-in-minutes" />
+          </div>
+          <button type="submit" class="btn btn-primary">Accept</button>
+        </form>
+      </div>
+    </div>    
     <div class="panel panel-default">
       <div class="panel-heading">        
         <div class="pull-right">          

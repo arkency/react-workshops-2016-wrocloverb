@@ -4,11 +4,23 @@
             <div class="pull-right">
               <div class="btn-group">
                 <a href="/" class="btn btn-default">Back</a>
-                <button class="btn btn-primary">Plan new&hellip;</button>
+                <a data-toggle="collapse" href="#add-conference-form" 
+                   class="btn btn-primary">Plan new&hellip;</a>
               </div>
             </div>
             Conferences
         </h1>
+        <div id="add-conference-form" class="collapse">
+          <div class="well">
+            <form>
+              <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" placeholder="ex. wroc_love.rb 2016" />
+              </div>             
+              <button type="submit" class="btn btn-primary">Plan</button>
+            </form>
+          </div>
+        </div>        
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h2 class="panel-title">
