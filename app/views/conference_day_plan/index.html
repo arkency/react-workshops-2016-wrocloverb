@@ -1,0 +1,58 @@
+<div class="container">
+  <div class="row">
+    <h1>
+      <div class="pull-right">
+        <a href="/conferences/active-conference" class="btn btn-default">Back</a>
+      </div>
+      wroc_love.rb 2016
+      <br />
+      <small>Agenda for Day 1</small>
+    </h1>
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Schedule Event for Day</h2>
+        </div>
+        <div class="panel-body">
+          <form action="/conference_days/day-1/conference_day_plan" method="post">
+            <div class="form-group">
+              <label for="start">Start hour:</label>
+              <input type="text" class="form-control" name="start" id="start" placeholder="ex: 18:00" />
+            </div>
+            <div class="form-group">
+              <label for="event">Event:</label>
+              <select class="form-control" name="event" id="event">
+                <option value="event-id-1" disabled>Working with Legacy Code</option>
+                <option value="event-id-2">React.js &plus; Redux Workshops</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-default btn-primary">Schedule</button>
+          </form>
+        </div>        
+      </div>      
+    </div>
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Current Agenda</h2>
+        </div>
+        <div class="panel-body">
+          <ul class="list-group">
+            <li class="list-group-item">
+              <div class="pull-right">
+                <button class="btn btn-danger btn-xs">Remove from Agenda</button>
+              </div>
+              <h5>
+                <strong>12:00&ndash;13:00</strong> 
+                Working with Legacy Code
+                <br />
+                <small>Andrzej Krzywda</small>
+              </h5>
+              <p><i>I'll show cool tricks to make your legacy codebase maintainable and make it easy to add new features without introducing regressions.</i></p>
+            </li>
+          </ul>
+        </div>        
+      </div>
+    </div>
+  </div>
+</div>
