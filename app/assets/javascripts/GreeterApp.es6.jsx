@@ -4,8 +4,6 @@ const { React,
         ReactRedux, 
         $ } = window;
 
-const { Panel } = ReactBootstrap;
-
 function GreeterApp () {
   const initialState = () => {
     return { name: "workshop attendands" };
