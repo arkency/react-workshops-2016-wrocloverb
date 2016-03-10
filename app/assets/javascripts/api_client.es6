@@ -3,6 +3,7 @@ const { fetch } = window;
 function APIClient () {
   const JSONAPIFetch = (method, url, options) => {
     const headersOptions = {
+      method,
       headers: {
         'Accept': 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json'
