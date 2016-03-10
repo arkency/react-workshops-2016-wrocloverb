@@ -16,16 +16,16 @@ function APIClient () {
   return {
     get (url) {
       const request = JSONAPIFetch("GET", url, {});
-      return request.then(response => response.json());
+      return request;
     },
     post (url, params) {
       const request = JSONAPIFetch("POST", url,
                         { body: JSON.stringify(params) });
-      return request.then(response => response.json());
+      return request;
     },
     delete (url) {
       const request = JSONAPIFetch("DELETE", url, {});
-      return request.then(response => response.json());
+      return request;
     }
   };
 }
