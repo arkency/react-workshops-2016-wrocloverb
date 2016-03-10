@@ -21,8 +21,6 @@ class ConferenceDaysController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html
-
       format.jsonapi do
         begin
           render json: show_response_body

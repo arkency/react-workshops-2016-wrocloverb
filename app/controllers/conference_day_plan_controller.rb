@@ -64,8 +64,6 @@ class ConferenceDayPlanController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html
-
       format.jsonapi do
         begin
           PlannedEvent.preload(:conference_day, :event).find(params[:id]).tap do |planned_event|

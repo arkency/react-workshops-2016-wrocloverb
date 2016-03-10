@@ -45,7 +45,6 @@ class EventsController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html
       format.jsonapi do
         begin
           Event.find(params[:id]).tap do |event|
