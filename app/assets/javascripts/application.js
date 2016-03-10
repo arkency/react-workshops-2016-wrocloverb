@@ -10,6 +10,9 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+//= require babel-polyfill-6.6.1
+//= require fetch-0.11.0
+//= require redux-thunk-2.0.1.min
 //= require jquery
 //= require jquery_ujs
 //= require twitter/bootstrap
@@ -21,3 +24,4 @@
 //= require classNames-2.2.3
 //= require uuid-js-0.7.5
 //= require_tree .
+
