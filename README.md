@@ -15,7 +15,7 @@ This application is an API for the frontend application you'll be creating. It c
 * API endpoints with responses formatted in the JSON API fashion. It follows the limited [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS) principle, so you should be able to discover all API endpoints by examining the root route.
 * Very simple HTML scaffolds to have something to start with. Only dummy data, they're not connected with backend at all.
 * A ready environment with [Redux](https://github.com/reactjs/redux), [React.js](https://github.com/facebook/react), [React-Bootstrap](https://react-bootstrap.github.io/), [classNames](https://github.com/JedWatson/classnames), [uuid-js](https://github.com/pnegri/uuid-js) and [React-Redux](https://github.com/reactjs/react-redux) installed. You can use ECMAScript 2015 in this environment. Modules are not supported (yet!), so no `import`/`export` statements.
-* A set of tiny utilities to make your life way easier - [`fetch`](https://fetch.spec.whatwg.org/)-based adapter for hitting JSON API endpoints and small utility to structure your reducers prettier than one-big-switch.
+* [`fetch`](https://fetch.spec.whatwg.org/)-based adapter for hitting JSON API endpoints, a.k.a. `APIClient`.
 
 To get started with discovering backend, you should GET the root path and follow `links`. Try `GET`/`POST` requests on them to check which options are available. If stuck, consult the documents with Q&A and examples.
 
