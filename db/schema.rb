@@ -16,8 +16,9 @@ ActiveRecord::Schema.define(version: 20160306194436) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pgcrypto"
+  enable_extension "uuid-ossp"
 
-  create_table "conference_days", id: :uuid, default: "gen_random_uuid()", force: :cascade do |t|
+  create_table "conference_days", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "label",         null: false
     t.datetime "from",          null: false
     t.datetime "to",            null: false
@@ -26,13 +27,13 @@ ActiveRecord::Schema.define(version: 20160306194436) do
     t.datetime "updated_at",    null: false
   end
 
-  create_table "conferences", id: :uuid, default: "gen_random_uuid()", force: :cascade do |t|
+  create_table "conferences", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "name",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "events", id: :uuid, default: "gen_random_uuid()", force: :cascade do |t|
+  create_table "events", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "name",                         null: false
     t.string   "host",                         null: false
     t.text     "description",     default: "", null: false
@@ -42,7 +43,7 @@ ActiveRecord::Schema.define(version: 20160306194436) do
     t.integer  "time_in_minutes",              null: false
   end
 
-  create_table "planned_events", id: :uuid, default: "gen_random_uuid()", force: :cascade do |t|
+  create_table "planned_events", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.uuid     "conference_day_id", null: false
     t.uuid     "event_id",          null: false
     t.datetime "start",             null: false
