@@ -3,8 +3,7 @@
 Mime::Type.register "application/vnd.api+json", :jsonapi
 
 middlewares = ReduxWorkshopRailsWay::Application.config.middleware
-middlewares.delete "ActionDispatch::ParamsParser"
-middlewares.use(ActionDispatch::ParamsParser, {
+middlewares.swap(ActionDispatch::ParamsParser, ActionDispatch::ParamsParser, {
   Mime::Type.lookup('application/vnd.api+json') => lambda do |body|
     ActiveSupport::JSON.decode(body)
   end
